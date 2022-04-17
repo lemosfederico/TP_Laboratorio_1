@@ -45,8 +45,14 @@ int main(void)
 		{
 		case 1:
 			//system("cls");
-			printf("Ingresa kilometros: ");
+			printf("Ingresa kilometros(debe ser mayor a 0): ");
 			scanf("%f",&kilometros);
+			while(kilometros<0)
+			{
+				printf("Ingresa kilometros(debe ser mayor a 0): ");
+				scanf("%f",&kilometros);
+			}
+
 			banderaKilometros=1;
 			break;
 		case 2:
@@ -61,15 +67,27 @@ int main(void)
 				{
 				case 1:
 					//system("cls");
-					printf("Ingresar precio vuelo Aerolineas: \n");
+					printf("Ingresar precio vuelo Aerolineas(debe ser mayor a 0): \n");
 					scanf("%f",&precioVueloAerolineas);
+
+					while(precioVueloAerolineas<0)
+					{
+						printf("Ingresar precio vuelo Aerolineas(debe ser mayor a 0): \n");
+						scanf("%f",&precioVueloAerolineas);
+					}
 					banderaPrecioAerolineas=1;
 
 					break;
 				case 2:
 					//system("cls");
-					printf("Ingresar precio vuelo Latam: \n");
+					printf("Ingresar precio vuelo Latam(debe ser mayor a 0): \n");
 					scanf("%f",&precioVueloLatam);
+
+					while(precioVueloLatam<0)
+					{
+						printf("Ingresar precio vuelo Latam(debe ser mayor a 0): \n");
+						scanf("%f",&precioVueloLatam);
+					}
 					banderaPrecioLatam=1;
 
 					break;
@@ -132,11 +150,10 @@ int main(void)
 				precioUnitarioLatam = PrecioPorKilometro(precioVueloLatam,kilometros);
 				diferencia = PrecioDiferencia(precioVueloAerolineas,precioVueloLatam);
 
-				printf("Se calcularon los costos\n\n");
+				printf("\nSe calcularon los costos\n\n");
 			}
 
 			break;
-
 		case 4:
 
 			if(banderaKilometros==0 && banderaPrecioAerolineas ==0 && banderaPrecioLatam ==0)

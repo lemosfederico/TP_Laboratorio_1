@@ -55,7 +55,7 @@ void MostrarResultados(float precioDebitoAerolineas,float precioDebitoLatam
 	printf("a) Precio con tarjeta de debito: $%.2f\n",precioDebitoLatam);
 	printf("b) Precio con tarjeta de credito: $%.2f\n",precioCreditoLatam);
 	printf("c) Precio pagando con bitcoin: %.2f BTC\n",precioBitcoinLatam);
-	printf("d) Precio unitario: %f\n",precioUnitarioLatam);
+	printf("d) Precio unitario: %.2f\n",precioUnitarioLatam);
 	printf("Aerolineas: \n");
 	printf("a) Precio con tarjeta de debito: %.2f\n",precioDebitoAerolineas);
 	printf("b) Precio con tarjeta de credito: %.2f\n",precioCreditoAerolineas);
@@ -69,7 +69,7 @@ void MostrarResultadosHardCodeados(float precioDebitoAerolineas,float precioDebi
 						,float precioUnitarioAerolineas,float precioUnitarioLatam,float diferencia,float kilometros
 						,float precioVueloAerolineas,float precioVueloLatam)
 {
-	printf("*** INFORME DE RESULTADOS ***\n\n");
+	printf("*** INFORME DE RESULTADOS HARDCODEADOS ***\n\n");
 	printf("KMs Ingresados: %d km\n\n",(int)kilometros);
 
 	printf("Precio Aerolineas: $%.2f\n",precioVueloAerolineas);
