@@ -23,9 +23,10 @@ int main(void)
 	int banderaKilometros = 0;
 	int banderaPrecioAerolineas = 0;
 	int banderaPrecioLatam = 0;
-	float kilometros;
-	float precioVueloAerolineas;
-	float precioVueloLatam;
+	int banderaCalculos=0;
+	float kilometros=0;
+	float precioVueloAerolineas=0;
+	float precioVueloLatam=0;
 	float precioDebitoAerolineas;
 	float precioDebitoLatam;
 	float precioCreditoAerolineas;
@@ -35,8 +36,8 @@ int main(void)
 	float precioUnitarioAerolineas;
 	float precioUnitarioLatam;
 	float diferencia;
-	char desicionSalida;
-	char desicionSalidaSeleccion;
+	int decisionSalida;
+	int decisionSalidaSeleccion;
 
 	do
 	{
@@ -44,21 +45,17 @@ int main(void)
 		switch (opcion)
 		{
 		case 1:
-			//system("cls");
-			printf("Ingresa kilometros(debe ser mayor a 0): ");
-			scanf("%f",&kilometros);
-			while(kilometros<0)
+			do
 			{
-				printf("Ingresa kilometros(debe ser mayor a 0): ");
-				scanf("%f",&kilometros);
-			}
-
+				kilometros=PedirFloatMinMax("Ingrese un valor mayor a 0 para los kilometros: ", 1, 999999);
+			}while(kilometros<0);
 			banderaKilometros=1;
+
 			break;
 		case 2:
 			if(banderaKilometros==0)
 			{
-				printf("ERROR,no se ingresaron kilometros,reintentar\n");
+				printf("\nERROR,no se ingresaron kilometros,reintentar\n");
 			}
 			else
 			{
@@ -66,77 +63,43 @@ int main(void)
 				switch(SubOpcion)
 				{
 				case 1:
-					//system("cls");
-					printf("Ingresar precio vuelo Aerolineas(debe ser mayor a 0): \n");
-					scanf("%f",&precioVueloAerolineas);
-
-					while(precioVueloAerolineas<0)
+					do
 					{
-						printf("Ingresar precio vuelo Aerolineas(debe ser mayor a 0): \n");
-						scanf("%f",&precioVueloAerolineas);
-					}
+						precioVueloAerolineas=PedirFloatMinMax("\nIngrese un valor mayor a 0 como precio de vuelo de aerolineas: ",1,9999999);
+					}while(precioVueloAerolineas<0);
 					banderaPrecioAerolineas=1;
 
 					break;
-				case 2:
-					//system("cls");
-					printf("Ingresar precio vuelo Latam(debe ser mayor a 0): \n");
-					scanf("%f",&precioVueloLatam);
 
-					while(precioVueloLatam<0)
+				case 2:
+					do
 					{
-						printf("Ingresar precio vuelo Latam(debe ser mayor a 0): \n");
-						scanf("%f",&precioVueloLatam);
-					}
+						precioVueloLatam=PedirFloatMinMax("\nIngrese un valor mayor a 0 como precio de vuelo de Latam: ",1,9999999);
+					}while(precioVueloLatam<0);
 					banderaPrecioLatam=1;
 
 					break;
-
 				case 3:
 
-					printf("Estas seguro de salir ? (s o n): ");
-					fflush(stdin);
-					scanf("%c",&desicionSalidaSeleccion);
-					desicionSalidaSeleccion=tolower(desicionSalidaSeleccion);
-
-					while(desicionSalidaSeleccion!='s' && desicionSalidaSeleccion!='n')
+					decisionSalidaSeleccion=MenuSalida();
+					if(decisionSalidaSeleccion==1)
 					{
-						printf("ERROR,ingresa : (s o n): ");
-						fflush(stdin);
-						scanf("%c",&desicionSalidaSeleccion);
-						desicionSalidaSeleccion=tolower(desicionSalidaSeleccion);
-					}
-
-					if (desicionSalidaSeleccion=='s')
-					{
-						printf("Ha salido de la seleccion de ingresar precio vuelo\n\n");
+						printf("Gracias vuelva pronto\n");
 					}
 					else
 					{
-						opcion=1;
+						SubOpcion=SubMenu();
 					}
-
 					break;
-
-				default:
-
-					break;
-
-				} // De aca para abajo continua el primer switch de opcion
-
+				}
 			}
 
 			break;
 
 		case 3:
-
-			if(banderaPrecioAerolineas==0)
+			if(banderaPrecioAerolineas==0 || banderaPrecioLatam==0)
 			{
-				printf("ERROR,Debe ingresar precio de aerolineas\n\n");
-			}
-			else if(banderaPrecioLatam==0)
-			{
-				printf("ERROR,Debe ingresar precio de Latam\n\n");
+				printf("\nERROR,Debe ingresar ambos precios para realizar los calculos\n\n");
 			}
 			else
 			{
@@ -149,16 +112,18 @@ int main(void)
 				precioUnitarioAerolineas = PrecioPorKilometro(precioVueloAerolineas, kilometros);
 				precioUnitarioLatam = PrecioPorKilometro(precioVueloLatam,kilometros);
 				diferencia = PrecioDiferencia(precioVueloAerolineas,precioVueloLatam);
+				banderaCalculos=1;
 
-				printf("\nSe calcularon los costos\n\n");
+				printf("Se calcularon los costos\n\n");
 			}
 
 			break;
+
 		case 4:
 
-			if(banderaKilometros==0 && banderaPrecioAerolineas ==0 && banderaPrecioLatam ==0)
+			if(banderaCalculos==0)
 			{
-				printf("ERROR,Debe ingresar kilometros, precio de aerolineas y precio de latam para poder informar los resultados\n\n");
+				printf("\nERROR,Debe ingresar kilometros, ambos precios y calcularlos para poder informar los resultados\n\n");
 			}
 			else
 			{
@@ -197,37 +162,16 @@ int main(void)
 			break;
 
 		case 6:
-
-			printf("Estas seguro de salir ? (s o n): ");
-			fflush(stdin);
-			scanf("%c",&desicionSalida);
-			desicionSalida = tolower(desicionSalida);
-
-			while (desicionSalida!='s' && desicionSalida!='n')
+			decisionSalida=MenuSalida();
+			if((decisionSalida)==1)
 			{
-				printf("ERROR,ingresa : (s o n): ");
-				fflush(stdin);
-				scanf("%c",&desicionSalida);
-				desicionSalida = tolower(desicionSalida);
+				printf("\nGracias,vuelva pronto\n");
 			}
-
-			if(desicionSalida=='s')
-			{
-				printf("Gracias,vuelva pronto \n");
-			}
-			else
-			{
-				opcion=1;
-			}
-
-			break;
-
-		default:
 
 			break;
 		}
 
-	}while(opcion != 6);
+	}while(decisionSalida!=1);
 
 	return EXIT_SUCCESS;
 }

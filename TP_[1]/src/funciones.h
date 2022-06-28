@@ -8,6 +8,34 @@
 #ifndef FUNCIONES_H_
 #define FUNCIONES_H_
 
+/// @brief Pide un entero al usuario
+///
+/// @param mensaje es el que uso para pedir el entero al usuario
+/// @return retorna el numero ingresado
+int PedirEntero(char mensaje[]);
+
+/// @brief Pide un entero al usuario con un limite minimo y maximo
+///
+/// @param mensaje es el que uso para pedir el entero al usuario
+/// @param min limite minimo que el usuario puede ingresar
+/// @param max limite maximo que el usuario puede ingresar
+/// @return retorna el numero ingresado
+int PedirEnteroMinMax(char mensaje[],int min,int max);
+
+/// @brief Pide un float al usuario
+///
+/// @param mensaje es el que uso para pedir el float al usuario
+/// @return retorna el numero ingresado
+float PedirFloat(char mensaje[]);
+
+/// \brief Pide un float al usuario con un limite minimo y maximo
+///
+/// \param mensaje mensaje es el que uso para pedir el float al usuario
+/// \param min limite minimo que el usuario puede ingresar
+/// \param max limite maximo que el usuario puede ingresar
+/// \return retorna el numero ingresado
+float PedirFloatMinMax(char mensaje[],int min,int max);
+
 /**
  * \brief Esta funcion hace la cuenta del precio pagando con debito
  *
@@ -82,6 +110,8 @@ void MostrarResultadosHardCodeados(float precioDebitoAerolineas,float precioDebi
 						,float precioCreditoAerolineas,float precioCreditoLatam,float precioBitcoinAerolineas,float precioBitcoinLatam
 						,float precioUnitarioAerolineas,float precioUnitarioLatam,float diferencia,float kilometros
 						,float precioVueloAerolineas,float precioVueloLatam);
+
+
 
 
 #endif /* FUNCIONES_H_ */
