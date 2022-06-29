@@ -78,18 +78,71 @@ float PedirFloat(char mensaje[],int min)
 	return num;
 }
 
+int validarChar(char texto[])
+{
+	int retorno=0;
+
+	for(int i=0;i<strlen(texto);i++)
+	{
+		if(!isalpha(texto[i]))
+		{
+			retorno=-1;
+			break;
+		}
+	}
+	return retorno;
+}
+
 void PedirString(char mensaje[],char stringIngresado[])
 {
-	puts(mensaje);
-	fflush(stdin);
-	gets(stringIngresado);
+	int validar;
 
-	while(strlen(stringIngresado)>51)
+	do
 	{
-		printf("ERROR,%s",mensaje);
+		printf("%s",mensaje);
 		fflush(stdin);
 		scanf("%[^\n]",stringIngresado);
-	}
+
+		while(strlen(stringIngresado)>51)
+		{
+			printf("ERROR,%s",mensaje);
+			fflush(stdin);
+			scanf("%[^\n]",stringIngresado);
+		}
+
+		validar=validarChar(stringIngresado);
+
+	}while(validar==-1);
+}
+
+void PedirCodigoVuelo(char mensaje[],char stringIngresado[])
+{
+
+	int retorno=-1;
+
+	do
+	{
+		printf("Ingrese codigo Alfa Numerico: ");
+		fflush(stdin);
+		scanf("%[^\n]",stringIngresado);
+
+		if(strlen(stringIngresado)>0 && strlen(stringIngresado)<51)
+		{
+			for(int i=0;i<strlen(stringIngresado);i++)
+			{
+				if(isdigit(stringIngresado[i]) || isalpha(stringIngresado[i]))
+				{
+					retorno=0;
+				}
+				else
+				{
+					retorno=-1;
+					break;
+				}
+			}
+		}
+	}while(retorno==-1);
+
 }
 
 int ValidarEntero(char aux[])

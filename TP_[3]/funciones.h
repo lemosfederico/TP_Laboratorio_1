@@ -30,6 +30,19 @@ float PedirFloat(char mensaje[],int min);
 /// @param mensaje muestra un mensaje para pedir el string
 /// @param stringIngresado es el string ingresado que uso para validar
 void PedirString(char mensaje[],char stringIngresado[]);
+
+/// @brief Pide un string al usuario que sea con numeros y letras pero sin nada mas
+///
+/// @param mensaje es el que uso para pedir el string al usuario
+/// @param stringIngresado uso esta variable para validar que el tamaño no sea mayor a 51
+void PedirCodigoVuelo(char mensaje[],char stringIngresado[]);
+
+/// @brief Valida que lo que se ingresa sean realmente letras y no otra cosa
+///
+/// @param texto uso esta variable para validar que sean solo letras
+/// @return TRUE si salio bien
+int validarChar(char texto[]);
+
 /// @brief Valida que el numero sea realmente un numero y no sean letras
 ///
 /// @param aux lo uso para recibir lo ingresado como char y de esta forma lo puedo controlar y validar que sean solo numeros

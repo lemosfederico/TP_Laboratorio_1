@@ -5,9 +5,7 @@
  *      Author: feder
  */
 
-
-
-
+#include "menu.h"
 int Menu()
 {
 	int opcion;

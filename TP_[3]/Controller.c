@@ -151,7 +151,7 @@ int controller_addPassenger(LinkedList* pArrayListPassenger)//
 		break;
 	}
 
-	PedirString("Ingrese codigo de vuelo alfanumerico: ",codigoVuelo);
+	PedirCodigoVuelo("Ingrese codigo de vuelo alfanumerico: ",codigoVuelo);
 	strupr(codigoVuelo);
 	Passenger_setCodigoVuelo(aux,codigoVuelo);
 
@@ -244,7 +244,7 @@ int controller_editPassenger(LinkedList* pArrayListPassenger)
 						break;
 
 					case 5:
-						PedirString(("Ingrese codigo de vuelo nuevo: "),auxCadena);
+						PedirCodigoVuelo(("Ingrese codigo de vuelo nuevo: "),auxCadena);
 						Passenger_setCodigoVuelo(unPasajero,auxCadena);
 						printf("El codigo de vuelo se ha modificado con EXITO\n");
 						break;
@@ -460,7 +460,7 @@ int controller_saveAsText(char* path , LinkedList* pArrayListPassenger)
  */
 int controller_saveAsBinary(char* path , LinkedList* pArrayListPassenger)
 {
-	int todoOk=0;//bandera
+	int todoOk=0;
 	FILE* pFile;
 	Passenger* unPasajeroAGuardar;
 	int len;
