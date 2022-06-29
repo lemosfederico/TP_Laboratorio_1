@@ -4,15 +4,8 @@
  *  Created on: 29 abr. 2022
  *      Author: feder
  */
-#define TRUE 0
-#define FALSE 1
 
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
 #include "arrayPassenger.h"
-#include "funciones.h"
-#include "menu.h"
 
 static int idIncremental=1000;
 static int GetId();
@@ -60,24 +53,25 @@ int LoadOne(ePassenger list[],int len)
 
 	PedirString(("Ingrese nombre del pasajero: "),auxiliar.name);
 	PedirString(("Ingrese apellido del pasajero: "),auxiliar.lastName);
-	auxiliar.price=PedirFloat("Ingrese precio: ");
-	PedirString(("Ingrese codigo de vuelo(alfanumerico): "),auxiliar.flycode);
-	auxiliar.typePassenger=PedirEntero("Ingrese tipo de pasajero:\n1.ECONOMICO\n2.EJECUTIVO\n3.PRIMERA CLASE\n ");
+	auxiliar.price=PedirFloatMinMax("Ingrese precio: ",1,999999);
+	PedirCodigoVuelo(("Ingrese codigo de vuelo(alfanumerico): "),auxiliar.flycode);
+	auxiliar.typePassenger=TipoPasajero();
+	auxiliar.statusFly=EstadoVuelo();
 	auxiliar.id=GetId();
 	auxiliar.isEmpty=FALSE;
 
-	retorno=addPassenger(list,len,auxiliar.id,auxiliar.name,auxiliar.lastName,auxiliar.price,auxiliar.typePassenger,auxiliar.flycode);
+	retorno=addPassenger(list,len,auxiliar.id,auxiliar.name,auxiliar.lastName,auxiliar.price,auxiliar.typePassenger,auxiliar.flycode,auxiliar.statusFly);
 
 	return retorno;
 }
 
-int addPassenger(ePassenger list[],int len, int id, char name[],char lastName[],float price,int typePassenger, char flycode[])
+int addPassenger(ePassenger list[],int len, int id, char name[],char lastName[],float price,int typePassenger, char flycode[],int statusFly)
 {
 	int retorno=-1;
 	int indiceLibre;
 	ePassenger auxiliar;
 
-	if(list!=NULL && len>=0)
+	if(list!=NULL && len>=0 && len<2000)
 	{
 		indiceLibre=SearchFree(list,len);
 		if(indiceLibre>=0)
@@ -88,6 +82,7 @@ int addPassenger(ePassenger list[],int len, int id, char name[],char lastName[],
 			auxiliar.price=price;
 			auxiliar.typePassenger=typePassenger;
 			strcpy(auxiliar.flycode,flycode);
+			auxiliar.statusFly=statusFly;
 			auxiliar.isEmpty=FALSE;
 			list[indiceLibre]=auxiliar;
 			retorno=0;
@@ -104,7 +99,7 @@ int findPassengerById(ePassenger list[],int len,int id)
 	 {
 		 if(list!=NULL && list[i].isEmpty!=TRUE && list[i].id == id)
 		 {
-			 retorno=0;
+			 retorno=i;
 			 break;
 		 }
 	 }
@@ -116,9 +111,9 @@ int modifyPassenger(ePassenger list[],int tam)
 	int retorno=-1;
 	int idIngresado;
 	int desicion;
-	char decisionSalida;
-	printPassenger(list,tam);
-	idIngresado=PedirEntero("Ingresa ID que quiere modificar: ");
+	int decisionSalida;
+	printPassengers(list,tam);
+	idIngresado=PedirEnteroMinMax("Ingresa ID que quiere modificar: ", "ERROR,ID no valido", 1000, 2000);
 
 	if(list!=NULL && tam>=0)
 	{
@@ -128,44 +123,50 @@ int modifyPassenger(ePassenger list[],int tam)
 			{
 				do
 				{
-					desicion=SubMenuModificar();
+					desicion=ModificarPasajero();
 					switch(desicion)
 					{
 					case 1:
-						PedirString(("Ingrese nombre nuevo: "),list[i].name);
-						printf("El nombre se ha modificado con EXITO\n");
+						PedirString(("\nIngrese nombre nuevo: "),list[i].name);
+						printf("\nEl nombre se ha modificado con EXITO\n");
 						break;
 
 					case 2:
-						PedirString(("Ingrese apellido nuevo: "),list[i].name);
-						printf("El apellido se ha modificado con EXITO\n");
+						PedirString(("\nIngrese apellido nuevo: "),list[i].lastName);
+						printf("\nEl apellido se ha modificado con EXITO\n");
 						break;
 
 					case 3:
-						list[i].price=PedirFloat("Ingrese precio nuevo: ");
-						printf("El importe se ha modificado con EXITO\n");
+						list[i].price=PedirFloatMinMax("\nIngrese precio nuevo: ", 1,999999);
+						printf("\nEl importe se ha modificado con EXITO\n");
 						break;
 
 					case 4:
-						list[i].typePassenger=PedirEntero("Ingrese tipo de pasajero nuevo: ");
-						printf("El tipo de pasajero se ha modificado con EXITO\n");
+						list[i].typePassenger=TipoPasajero();
+						printf("\nEl tipo de pasajero se ha modificado con EXITO\n");
 						break;
 
 					case 5:
-						PedirString(("Ingrese codigo de vuelo nuevo: "),list[i].flycode);
-						printf("El codigo de vuelo se ha modificado con EXITO\n");
+						PedirCodigoVuelo("\nIngrese codigo de vuelo nuevo: ", list[i].flycode);
+						printf("\nEl codigo de vuelo se ha modificado con EXITO\n");
 						break;
 
 					case 6:
-						printf("Desea salir? s/n: ");
-						fflush(stdin);
-						scanf("%c",&decisionSalida);
-						decisionSalida=tolower(decisionSalida);
-						retorno=0;
+						list[i].statusFly=EstadoVuelo();
+						printf("\nEl estado de vuelo se ha modificado con EXITO\n");
+						break;
+
+					case 7:
+						decisionSalida=MenuSalida();
+						if(decisionSalida==1)
+						{
+							printf("Gracias,Vuelva pronto\n");
+							retorno=0;
+						}
 						break;
 					}
 
-				}while(decisionSalida!='s');
+				}while(decisionSalida!=1);
 			}
 		}
 	}
@@ -176,16 +177,24 @@ int modifyPassenger(ePassenger list[],int tam)
 int removePassenger(ePassenger list[], int len, int id)
 {
 	int retorno=-1;
-	printPassenger(list,len);
-
+	int seguridad;
 	if(list!=NULL && len>=0)
 	{
 		for(int i=0;i<len;i++)
 		{
 			if(list[i].isEmpty!=TRUE && list[i].id==id)
 			{
-				list[i].isEmpty=TRUE;
-				retorno=0;
+				PrintPassenger(list[i]);
+				seguridad=PedirEnteroMinMax("\nSeguro desea eliminar al pasajero? (1-SI/2-NO): ", "ERROR,reintente", 1, 2);
+				if(seguridad==1)
+				{
+					list[i].isEmpty=TRUE;
+					retorno=0;
+				}
+				else
+				{
+					printf("\nSalio de eliminar\n");
+				}
 				break;
 			}
 		}
@@ -195,10 +204,13 @@ int removePassenger(ePassenger list[], int len, int id)
 
 void PrintPassenger(ePassenger passenger)
 {
-	printf("%4d %10s %10s %.2f %10s %d\n",passenger.id,passenger.name,passenger.lastName,passenger.price,passenger.flycode,passenger.typePassenger);
+	printf("%-10d %-15s %-15s %-15.2f %-8s",passenger.id,passenger.name,passenger.lastName,passenger.price,passenger.flycode);
+	PrintTypePassenger(passenger);
+	PrintEstadoVuelo(passenger);
+	printf("\n");
 }
 
-int printPassenger(ePassenger list[], int length)
+int printPassengers(ePassenger list[], int length)
 {
 	int retorno=-1;
 	if(list!=NULL && length>0)
@@ -224,6 +236,7 @@ int sortPassengers(ePassenger list[], int len, int order)
 	if(list!=NULL && len>0)
 	{
 		retorno=0;
+		printf("\n		-----------Lista de pasajeros-------------------\n\n");
 		if(order==0)
 		{
 			for (int i=0;i<len-1;i++)
@@ -262,24 +275,64 @@ int sortPassengers(ePassenger list[], int len, int order)
 	return retorno;
 }
 
-int pedirIdPasajero()
+int sortPassengersByCode(ePassenger list[], int len, int order)
 {
-	int id;
+	int retorno=-1;
 
-	id=PedirEntero("Ingrese el id del pasajero: ");
+	ePassenger aux;
 
-	return id;
+	if(list!=NULL && len>0)
+	{
+		retorno=0;
+		printf("\n		-----------Lista de pasajeros-------------------\n\n");
+		if(order==0)
+		{
+			for (int i=0;i<len-1;i++)
+			{
+				for(int j=i+1;j<len;j++)
+				{
+					if(strcmpi(list[i].flycode,list[j].flycode)<0
+					|| (strcmpi(list[i].flycode,list[j].flycode)==0 && list[i].statusFly>list[j].statusFly))
+					{
+						aux=list[i];
+						list[i]=list[j];
+						list[j]=aux;
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int i=0;i<len-1;i++)
+			{
+				for(int j=i+1;j<len;j++)
+				{
+					if(strcmpi(list[i].flycode,list[j].flycode)>0
+					|| (strcmpi(list[i].flycode,list[j].flycode)==0 && list[i].statusFly>list[j].statusFly))
+					{
+						aux=list[i];
+						list[i]=list[j];
+						list[j]=aux;
+					}
+				}
+			}
+		}
+
+	}
+
+	return retorno;
 }
+
 
 int removerPasajero(ePassenger list[],int len)
 {
 	int retorno=-1;
-	int id;
-
+	int idIngresado;
+	printPassengers(list,len);
+	idIngresado=PedirEnteroMinMax("\nIngresa ID que quiere eliminar: ", "ERROR,ID no valido", 1000, 2000);
 	if(list!=NULL && len>0)
 	{
-		id=pedirIdPasajero();
-		retorno=removePassenger(list,len,id);
+		retorno=removePassenger(list,len,idIngresado);
 	}
 
 	return retorno;
@@ -289,13 +342,19 @@ int hardcodearEstructura(ePassenger list[],int len)
 {
 	int retorno=-1;
 
-	if(list!=NULL && len>0)
+	if(list!=NULL)
 	{
-		addPassenger(list,len,GetId(), "Fede", "Lemos", 150.50, 1, "C002");
-		addPassenger(list,len,GetId(), "Leo", "Ledesma", 120.50, 1, "D400");
-		addPassenger(list,len,GetId(), "Ana", "Zapallo", 111.50, 1, "F598");
-		addPassenger(list,len,GetId(), "Martina", "Garbin", 145.50, 1, "A878");
-		addPassenger(list,len,GetId(), "Sebastian", "Lemos", 160.50, 2, "J645");
+		addPassenger(list,len,GetId(), "Fede", "Lemos", 150.50, 1, "C002", 1 );
+		addPassenger(list,len,GetId(), "Leo", "Ledesma", 120.50, 3, "D400",2);
+		addPassenger(list,len,GetId(), "Ana", "Zapallo", 111.50, 2, "F598",3);
+		addPassenger(list,len,GetId(), "Martina", "Garbin", 145.50, 1, "A878",1);
+		addPassenger(list,len,GetId(), "Sebastian", "Lemos", 160.50, 2, "J645",2);
+		retorno=1;
+	}
+
+	for(int i=0;i<len;i++)
+	{
+		PrintPassenger(list[i]);
 	}
 
 	return retorno;
@@ -338,18 +397,95 @@ void informarTotalYPromedioPasajes(ePassenger list[],int len)
 
 	promedioPrecios=acumuladorPrecio/cantidadPasajeros;
 
-	for(int i=0;i<len;i++)
-	{
-		if(list[i].price>promedioPrecios)
+		for(int i=0;i<len;i++)
 		{
-			pasajerosMayorAPromedio++;
+			if(list[i].price>promedioPrecios)
+			{
+				pasajerosMayorAPromedio++;
+			}
 		}
-	}
 
 	}
 
-	printf("El total de precios de los pasajes es: %.2f\nEl promedio es todos los precios es: %.2f\nY la cantidad de pasajeros que el precio supera el promedio es: %d\n"
+	printf("El total de precios de los pasajes es: %.2f\nEl promedio es todos los precios es: %.2f\nla cantidad de pasajeros que el precio supera el promedio es: %d\n"
 			,acumuladorPrecio,promedioPrecios,pasajerosMayorAPromedio);
 
 }
 
+int ModificarPasajero()
+{
+	int opcion;
+
+	printf("-------------------------------------------------------------------------------------------------\n");
+	printf("Ingrese que desea modificar\n");
+	printf("1.Nombre\n");
+	printf("2.Apellido\n");
+	printf("3.Precio\n");
+	printf("4.Tipo de pasajero\n");
+	printf("5.Codigo de vuelo\n");
+	printf("6.Estado de vuelo\n");
+	printf("7.Salir\n");
+	opcion=PedirEnteroMinMax("INGRESE UNA OPCION(1,2,3,4,5,6,7): ","ERROR,opcion no valida",1,7);
+
+	return opcion;
+}
+
+int TipoPasajero()
+{
+	int opcion;
+
+	printf("-------------------------------------------------------------------------------------------------\n");
+	printf("Ingrese tipo de pasajero\n");
+	printf("1.ECONOMICO\n");
+	printf("2.EJECUTIVO\n");
+	printf("3.PRIMERA CLASE\n");
+	opcion=PedirEnteroMinMax("INGRESE UNA OPCION(1,2,3): ","ERROR,opcion no valida",1,3);
+
+	return opcion;
+}
+
+void PrintTypePassenger(ePassenger list)
+{
+	switch(list.typePassenger)
+	{
+	case 1:
+		printf("%-15s","ECONOMICO");
+		break;
+	case 2:
+		printf("%-15s","EJECUTIVO");
+		break;
+	case 3:
+		printf("%-15s","PRIMERA CLASE");
+		break;
+	}
+}
+
+int EstadoVuelo()
+{
+	int opcion;
+
+	printf("-------------------------------------------------------------------------------------------------\n");
+	printf("Ingrese estado de vuelo\n");
+	printf("1.ACTIVO\n");
+	printf("2.CANCELADO\n");
+	printf("3.DEMORADO\n");
+	opcion=PedirEnteroMinMax("INGRESE UNA OPCION(1,2,3): ","ERROR,opcion no valida",1,3);
+
+	return opcion;
+}
+
+void PrintEstadoVuelo(ePassenger list)
+{
+	switch(list.statusFly)
+	{
+	case 1:
+		printf("%-15s","ACTIVO");
+		break;
+	case 2:
+		printf("%-15s","CANCELADO");
+		break;
+	case 3:
+		printf("%-15s","DEMORADO");
+		break;
+	}
+}

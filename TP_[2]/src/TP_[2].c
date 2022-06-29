@@ -8,12 +8,8 @@
  ============================================================================
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
 #include "menu.h"
-#include "arrayPassenger.h"
-#define TAM 5
+
 
 int main(void)
 {
@@ -23,9 +19,10 @@ int main(void)
 
 	int opcion;
 	int opcionListar;
-	char decisionSalida;
-	char decisionSalidaListar;
+	int decisionSalida;
+	int decisionSalidaListar;
 	int flagSeguridad=0;
+	int orden;
 
 	initPassengers(list,TAM);
 
@@ -82,13 +79,15 @@ int main(void)
 					switch(opcionListar)
 					{
 					case 1:
-						if(sortPassengers(list,TAM,1)==0)
+						orden=PedirEnteroMinMax("Como lo quiere ordenar? (1-ASCENDENTE / 0-DESCENDENTE): ", "ERROR,reintente", 0, 1);
+						if(sortPassengers(list,TAM,orden)==0)
 						{
-							printf("\n      *** Lista de pasajeros ***    \n\n");
-							if(printPassenger(list,TAM)==0)
-							{
-								printf("\n");
-							}
+							printf("\nSe ordeno con el criterio seleccionado\n");
+							printPassengers(list,TAM);
+						}
+						else
+						{
+							printf("ERROR,no se pudo ordenar\n");
 						}
 						break;
 
@@ -97,65 +96,47 @@ int main(void)
 						break;
 
 					case 3:
-
+						orden=PedirEnteroMinMax("Como lo quiere ordenar? (1-ASCENDENTE / 0-DESCENDENTE): ", "ERROR,reintente", 0, 1);
+						if(sortPassengersByCode(list, TAM, orden)==0)
+						{
+							printf("\nSe ordeno con el criterio seleccionado\n");
+							printPassengers(list,TAM);
+						}
+						else
+						{
+							printf("ERROR,no se pudo ordenar\n");
+						}
 						break;
 
 					case 4:
-						printf("Desea salir? (s/n): ");
-						fflush(stdin);
-						scanf("%c",&decisionSalidaListar);
-						decisionSalidaListar=tolower(decisionSalidaListar);
-
-						while (decisionSalidaListar!='s' && decisionSalidaListar!='n')
+						decisionSalidaListar=MenuSalida();
+						if(decisionSalidaListar==1)
 						{
-							printf("ERROR,ingresa : (s o n): ");
-							fflush(stdin);
-							scanf("%c",&decisionSalidaListar);
-							decisionSalidaListar = tolower(decisionSalidaListar);
+							printf("Gracias, Vuelva pronto\n");
 						}
-
-						if(decisionSalidaListar=='s')
-						{
-							printf("Gracias,vuelva pronto \n");
-						}
-
 						break;
 
 					default:
-
 						printf("OPCION INCORRECTA,por favor ingrese opciones numericas entre 1 y 4\n");
 
 						break;
 					}
 
-				}while(decisionSalidaListar!='s');
+				}while(decisionSalidaListar!=1);
 			}
 			break;
 
 		case 5:
-			flagSeguridad=1;
 			hardcodearEstructura(list,TAM);
+			flagSeguridad=1;
 
 			break;
 
 		case 6:
-
-			printf("Desea salir? (s/n): ");
-			fflush(stdin);
-			scanf("%c",&decisionSalida);
-			decisionSalida=tolower(decisionSalida);
-
-			while (decisionSalida!='s' && decisionSalida!='n')
+			decisionSalida=MenuSalida();
+			if(decisionSalida==1)
 			{
-				printf("ERROR,ingresa : (s o n): ");
-				fflush(stdin);
-				scanf("%c",&decisionSalida);
-				decisionSalida = tolower(decisionSalida);
-			}
-
-			if(decisionSalida=='s')
-			{
-				printf("Gracias,vuelva pronto \n");
+				printf("Gracias, Vuelva pronto\n");
 			}
 
 			break;
@@ -166,8 +147,7 @@ int main(void)
 			break;
 		}
 
-
-	}while(decisionSalida!='s');
+	}while(decisionSalida!=1);
 
 
 	return EXIT_SUCCESS;
