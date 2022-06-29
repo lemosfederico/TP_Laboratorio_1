@@ -445,7 +445,13 @@ int controller_saveAsText(char* path , LinkedList* pArrayListPassenger)
 			fprintf(pFile, "%d, %s, %s, %f, %s, %s, %s\n", auxId, auxNombre, auxApellido, auxPrecio, auxCodigo, auxTipoPasajero, auxEstadoVuelo);
 		}
 		todoOk=1;
+
 		fclose(pFile);
+	}
+
+	if(todoOk==1)
+	{
+		printf("\nSe guardo correctamente\n");
 	}
 
 	return todoOk;
@@ -482,6 +488,12 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListPassenger)
 		}
 		fclose(pFile);
 	}
+
+	if(todoOk==1)
+	{
+		printf("\nSe guardo correctamente\n");
+	}
+
 
 	return todoOk;
 }
